@@ -1,0 +1,18 @@
+
+ident = @{ ( "_" | ASCII_ALPHA ) ~ ( ASCII_ALPHANUMERIC | "_" )* }
+
+
+ifdefcpp = { "#ifdef" ~ "__cplusplus" ~ NEWLINE }
+extern_c = !{ "extern" ~ "\"C\"" ~ "{" ~ NEWLINE }
+cpp_open = _{ ifdefcpp ~ extern_c ~ p_endif }
+cpp_close = _{ ifdefcpp ~ "}" ~ p_endif }
+
+p_ifdef = { "#ifdef" ~ ident }
+p_else = { "#else" }
+p_endif = { "#endif" }
+
+p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
+p_define = @{ "#define" ~ WHITESPACE ~ ident ~ (WHITESPACE ~ p_define_value)? ~ NEWLINE }
+
+WHITESPACE = _{ " " | "\t" }
+comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }
