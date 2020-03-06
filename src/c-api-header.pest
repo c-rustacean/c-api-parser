@@ -12,7 +12,7 @@ p_else = { "#else" }
 p_endif = { "#endif" }
 
 p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
-p_define = @{ "#define" ~ SPACES ~ ident ~ (SPACES ~ p_define_value)? ~ NEWLINE }
+p_define = @{ "#define" ~ MACROSPACE ~ ident ~ (MACROSPACE ~ p_define_value)? ~ NEWLINE }
 
 
 rhs_typedef_simple = { ident ~ ident }
@@ -21,5 +21,6 @@ rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( (rhs_typedef
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 
 SPACES = _{ " " | "\t" }
+MACROSPACE = _{SPACES | ( "\\" ~ NEWLINE{1} ) }
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }

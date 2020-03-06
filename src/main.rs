@@ -37,6 +37,21 @@ mod tests {
     }
 
     #[test]
+    fn define_multiline() {
+        let test_input = "#define FOO \
+        typedef struct { \
+            struct { \
+                uint8_t foo; \
+                uint32_t bar; \
+            } subfield; \
+            int8_t baz; \
+        } outer;
+        ";
+        let parse = ApiParser::parse(Rule::p_define, test_input);
+        assert!(parse.is_ok());
+    }
+
+    #[test]
     fn define_foo_with_val_is_ok() {
         let parse = ApiParser::parse(Rule::p_define, "#define FOO ((123) + 4) \n");
         assert!(parse.is_ok());
