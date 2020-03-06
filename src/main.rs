@@ -53,6 +53,33 @@ mod tests {
         let parse = ApiParser::parse(Rule::comment, "//* foo /* bar */ baz \n");
         assert!(parse.is_ok());
     }
+
+    #[test]
+    fn typedef_simple() {
+        let parse = ApiParser::parse(Rule::typedef, "typedef uint32_t myType;");
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_union() {
+        let parse = ApiParser::parse(Rule::typedef, "typedef union tag { uint32_t u32_var1; } myunion;");
+        // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag { uint32_t u32_var1; } myunion");
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_struct() {
+        let parse = ApiParser::parse(Rule::typedef, "typedef struct tag { uint32_t u32_var1; } mystruct;");
+        // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag { uint32_t u32_var1; } myunion");
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_struct_multifield() {
+        let parse = ApiParser::parse(Rule::typedef, "typedef struct { uint32_t u32_var1; uint8_t bla; float f; } mystruct;");
+        // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag { uint32_t u32_var1; } myunion");
+        assert!(dbg!(parse).is_ok());
+    }
 }
 
 fn main() {

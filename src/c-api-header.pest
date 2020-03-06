@@ -14,5 +14,12 @@ p_endif = { "#endif" }
 p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
 p_define = @{ "#define" ~ WHITESPACE ~ ident ~ (WHITESPACE ~ p_define_value)? ~ NEWLINE }
 
+
+rhs_typedef_simple = { ident ~ ident }
+rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( ident ~ ident ~ ";")+ ~ "}" ~ ident }
+
+typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
+
+
 WHITESPACE = _{ " " | "\t" }
 comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }
