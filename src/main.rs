@@ -117,6 +117,26 @@ mod tests {
         assert!(dbg!(parse).is_ok());
     }
 
+    #[test]
+    fn simple_h() {
+        let test_input = "
+        #define FOO
+        #define BAZ FOO
+        #define VAL 3
+
+        typedef uint8_t byte;
+
+        typedef struct {
+            struct {
+                uint8_t foo;
+                uint32_t bar;
+            } subfield;
+            int8_t baz;
+        } outer;";
+        let parse = ApiParser::parse(Rule::file, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
     // TODO: Support #includes(?)
 }
 

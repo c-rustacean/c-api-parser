@@ -24,3 +24,5 @@ SPACES = _{ " " | "\t" }
 MACROSPACE = _{SPACES | ( "\\" ~ NEWLINE{1} ) }
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }
+
+file = { SOI ~ (typedef | p_define | comment | NEWLINE)* ~ EOI }
