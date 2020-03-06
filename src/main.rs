@@ -79,6 +79,19 @@ mod tests {
         let parse = ApiParser::parse(Rule::typedef, "typedef struct { \n uint32_t u32_var1; \n uint8_t bla; \n float f; \n } \n mystruct ;");
         assert!(dbg!(parse).is_ok());
     }
+
+    #[test]
+    fn typedef_struct_in_struct() {
+        let test_input = "typedef struct {
+            struct {
+                uint8_t foo;
+                uint32_t bar;
+            } subfield;
+            int8_t baz;
+        } outer;";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
 }
 
 fn main() {

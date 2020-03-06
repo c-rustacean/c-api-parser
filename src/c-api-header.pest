@@ -16,7 +16,7 @@ p_define = @{ "#define" ~ SPACES ~ ident ~ (SPACES ~ p_define_value)? ~ NEWLINE 
 
 
 rhs_typedef_simple = { ident ~ ident }
-rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( ident ~ ident ~ ";")+ ~ "}" ~ ident }
+rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( (rhs_typedef_complex | ident ~ ident) ~ ";")+ ~ "}" ~ ident }
 
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 
