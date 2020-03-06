@@ -75,9 +75,8 @@ mod tests {
     }
 
     #[test]
-    fn typedef_struct_multifield() {
-        let parse = ApiParser::parse(Rule::typedef, "typedef struct { uint32_t u32_var1; uint8_t bla; float f; } mystruct;");
-        // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag { uint32_t u32_var1; } myunion");
+    fn typedef_struct_multifield_no_tag() {
+        let parse = ApiParser::parse(Rule::typedef, "typedef struct { \n uint32_t u32_var1; \n uint8_t bla; \n float f; \n } \n mystruct ;");
         assert!(dbg!(parse).is_ok());
     }
 }
@@ -96,5 +95,9 @@ fn main() {
     println!("{:?}", parse);
 
     let parse = ApiParser::parse(Rule::p_define, "#define Foo\n");
+    println!("{:?}", parse);
+
+    // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union { uint32_t u32_var1; } myunion");
+    let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag \n { \n uint32_t u32_var1; \n } myunion");
     println!("{:?}", parse);
 }

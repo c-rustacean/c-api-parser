@@ -3,7 +3,7 @@ ident = @{ ( "_" | ASCII_ALPHA ) ~ ( ASCII_ALPHANUMERIC | "_" )* }
 
 
 ifdefcpp = { "#ifdef" ~ "__cplusplus" ~ NEWLINE }
-extern_c = !{ "extern" ~ "\"C\"" ~ "{" ~ NEWLINE }
+extern_c = @{ "extern" ~ SPACES ~ "\"C\"" ~ SPACES ~ "{" ~ SPACES ~ NEWLINE }
 cpp_open = _{ ifdefcpp ~ extern_c ~ p_endif }
 cpp_close = _{ ifdefcpp ~ "}" ~ p_endif }
 
@@ -12,7 +12,7 @@ p_else = { "#else" }
 p_endif = { "#endif" }
 
 p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
-p_define = @{ "#define" ~ WHITESPACE ~ ident ~ (WHITESPACE ~ p_define_value)? ~ NEWLINE }
+p_define = @{ "#define" ~ SPACES ~ ident ~ (SPACES ~ p_define_value)? ~ NEWLINE }
 
 
 rhs_typedef_simple = { ident ~ ident }
@@ -20,6 +20,6 @@ rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( ident ~ iden
 
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 
-
-WHITESPACE = _{ " " | "\t" }
+SPACES = _{ " " | "\t" }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }
