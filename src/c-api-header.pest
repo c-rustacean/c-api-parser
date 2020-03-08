@@ -14,9 +14,13 @@ p_endif = { "#endif" }
 p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
 p_define = @{ "#define" ~ MACROSPACE ~ ident ~ (MACROSPACE ~ p_define_value)? ~ NEWLINE }
 
+oldtype = @{ ident }
+newtype = @{ ident }
+tag = @{ ident }
 
-rhs_typedef_simple = { ident ~ ident }
-rhs_typedef_complex = { ("union" | "struct") ~ ( ident )? ~ "{" ~ ( (rhs_typedef_complex | ident ~ ident) ~ ";")+ ~ "}" ~ ident }
+rhs_typedef_simple = { oldtype ~ newtype }
+complex_type_def = { ("union" | "struct") ~ ( tag )? ~ "{" ~ ( (rhs_typedef_complex | rhs_typedef_simple) ~ ";")+ ~ "}" }
+rhs_typedef_complex = { complex_type_def ~ newtype }
 
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 

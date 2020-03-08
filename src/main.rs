@@ -3,6 +3,7 @@ use pest;
 extern crate pest_derive;
 
 use pest::Parser;
+use std::{env, fs};
 
 #[derive(Parser)]
 #[grammar = "c-api-header.pest"]
@@ -141,22 +142,39 @@ mod tests {
 }
 
 fn main() {
-    let parse = ApiParser::parse(Rule::comment, "/* cdjhf * */ bla");
-    println!("comment = {:?}", parse);
+    let args: Vec<String> = env::args().collect();
 
-    let parse = ApiParser::parse(Rule::comment, "// fds  cdjhf * */ bla\n foo");
-    println!("comment = {:?}", parse);
+    // dbg!(&args, &args[1]);
+    let unparsed_file = fs::read_to_string(&args[1]).expect("Could not read input header");
 
-    let parse = ApiParser::parse(Rule::ident, "cdjhf_0");
-    println!("{:?}", parse);
+    let h_file = ApiParser::parse(Rule::file, &unparsed_file)
+        .expect("Could not parse input .h file")
+        .next()
+        .expect("Could not get the root pair of the input file")
+        .into_inner();
 
-    let parse = ApiParser::parse(Rule::extern_c, "extern \"C\" { \n hf_0");
-    println!("{:?}", parse);
 
-    let parse = ApiParser::parse(Rule::p_define, "#define Foo\n");
-    println!("{:?}", parse);
+    let mut complex_c_types: Vec<String> = Vec::new();
 
-    // let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union { uint32_t u32_var1; } myunion");
-    let parse = ApiParser::parse(Rule::rhs_typedef_complex, "union tag \n { \n uint32_t u32_var1; \n } myunion");
-    println!("{:?}", parse);
+    for pair in h_file {
+        // dbg!(&pair, "\n");
+        match pair.as_rule() {
+            Rule::typedef => {
+                let mut rhs = pair.into_inner().next().unwrap().into_inner();
+
+                let old_type_pair = rhs.next().unwrap();
+                let type_name: &str = rhs.next().unwrap().as_str();
+                println!("typedef '{}' of type '{}'\n", type_name, old_type_pair.as_str());
+
+                if let Rule::complex_type_def = old_type_pair.as_rule() {
+                    complex_c_types.push(type_name.to_string());
+                }
+
+            },
+            _x => () /* println!("   Ignored rule {:?}\n", _x) */ ,
+        };
+
+    }
+
+    dbg!(complex_c_types);
 }
