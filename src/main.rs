@@ -97,6 +97,39 @@ mod tests {
     }
 
     #[test]
+    fn typedef_array_u8_numeric_index() {
+        let test_input = "typedef uint8_t byte[4];";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn array_index_numeric() {
+        let parse = ApiParser::parse(Rule::array_index, "34");
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn array_index_define() {
+        let parse = ApiParser::parse(Rule::array_index, "FOO");
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn array_alpha_index() {
+        let test_input = "[ VAL ]   ; ";
+        let parse = ApiParser::parse(Rule::array_suffix, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_array_u8_define_index() {
+        let test_input = "typedef uint8_t byte[VAL];";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
     fn typedef_struct_multifield_no_tag() {
         let parse = ApiParser::parse(
             Rule::typedef,
@@ -127,13 +160,17 @@ mod tests {
 
         typedef uint8_t byte;
 
+        typedef uint16_t array16_val[VAL];
+
         typedef struct {
             struct {
                 uint8_t foo;
                 uint32_t bar;
             } subfield;
             int8_t baz;
-        } outer;";
+        } outer;
+
+        typedef uint8_t arr_u8_3[3];";
         let parse = ApiParser::parse(Rule::file, test_input);
         assert!(dbg!(parse).is_ok());
     }

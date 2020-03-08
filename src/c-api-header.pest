@@ -18,9 +18,12 @@ oldtype = @{ ident }
 newtype = @{ ident }
 tag = @{ ident }
 
-rhs_typedef_simple = { oldtype ~ newtype }
+array_index = { ( ASCII_ALPHANUMERIC | "_" )+ }
+array_suffix = { "[" ~ array_index ~ "]" }
+
+rhs_typedef_simple = { oldtype ~ newtype ~ (array_suffix)? }
 complex_type_def = { ("union" | "struct") ~ ( tag )? ~ "{" ~ ( (rhs_typedef_complex | rhs_typedef_simple) ~ ";")+ ~ "}" }
-rhs_typedef_complex = { complex_type_def ~ newtype }
+rhs_typedef_complex = { complex_type_def ~ newtype ~ (array_suffix)? }
 
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 
