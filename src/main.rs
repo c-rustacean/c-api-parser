@@ -178,11 +178,9 @@ mod tests {
     // TODO: Support #includes(?)
 }
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
+fn get_complex_type_names(input_h: &str) -> Vec<String> {
 
-    // dbg!(&args, &args[1]);
-    let unparsed_file = fs::read_to_string(&args[1]).expect("Could not read input header");
+    let unparsed_file = fs::read_to_string(input_h).expect("Could not read input header");
 
     let h_file = ApiParser::parse(Rule::file, &unparsed_file)
         .expect("Could not parse input .h file")
@@ -206,12 +204,51 @@ fn main() {
                 if let Rule::complex_type_def = old_type_pair.as_rule() {
                     complex_c_types.push(type_name.to_string());
                 }
-
             },
             _x => () /* println!("   Ignored rule {:?}\n", _x) */ ,
         };
-
     }
 
-    dbg!(complex_c_types);
+    dbg!(complex_c_types)
+
+}
+
+fn test_file(complex_types: Vec<String>, input_h: &str) -> String {
+
+    // first part of file
+    let mut c_test_contents = format!(
+        r#"#include "{}"
+
+        int main() {{
+            struct {{
+        "#, input_h);
+    for t in &complex_types {
+        c_test_contents.push_str(&(format!("   {0} {0}_m;\n", t)));
+    }
+    c_test_contents.push_str("} members_t;\n");
+
+    c_test_contents
+        .push_str("\n\n    printf(\"\\nTOTAL\t | %d\\n\", sizeof(members_t));\n\n");
+
+    for t in complex_types {
+        c_test_contents
+            .push_str(&(format!("    printf(\"{0}\t | %d\\n\", sizeof({0});\n", t)));
+    }
+    c_test_contents.push_str("}");
+
+    c_test_contents
+}
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    // dbg!(&args, &args[1]);
+    let input_h = &args[1];
+    let complex_c_types = get_complex_type_names(&input_h);
+    let c_test_contents = test_file(complex_c_types, &input_h);
+
+    // dbg!(c_test_contents);
+
+    println!("{}", c_test_contents);
+
 }
