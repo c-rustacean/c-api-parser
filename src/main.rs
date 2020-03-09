@@ -189,6 +189,13 @@ mod tests {
         assert!(dbg!(parse).is_ok());
     }
 
+    #[test]
+    fn pragma_line() {
+        let test_input = "#pragma foo bar\n";
+        let parse = ApiParser::parse(Rule::p_line, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
     // TODO: Support #includes(?)
 }
 
