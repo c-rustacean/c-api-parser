@@ -28,7 +28,10 @@ array_index = { ( ASCII_ALPHANUMERIC | "_" )+ }
 paren_array_index = { "(" ~ array_index ~ ")" | array_index }
 array_suffix = { "[" ~ paren_array_index ~ "]" }
 
-rhs_typedef_simple = { oldtype ~ newtype ~ (array_suffix)? }
+type_qualif_s = { "signed" | "unsigned" }
+type_qualif_l = { "long" }
+
+rhs_typedef_simple = { "volatile"? ~ type_qualif_s? ~ type_qualif_l? ~ oldtype ~ newtype ~ (array_suffix)? }
 complex_type_def = { ("union" | "struct") ~ ( tag )? ~ "{" ~ ( (rhs_typedef_complex | rhs_typedef_simple) ~ ";")+ ~ "}" }
 rhs_typedef_complex = { complex_type_def ~ newtype ~ (array_suffix)? }
 

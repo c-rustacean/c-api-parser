@@ -167,6 +167,36 @@ mod tests {
     }
 
     #[test]
+    fn typedef_volatile_qualif() {
+        let test_input = "typedef  volatile char vuint8_t;\n";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_unsigned_int() {
+        let test_input = "typedef  unsigned  int uint32_t;\n";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    #[ignore]
+    // TODO: This is broken since 'long' is both a qualifier and a type
+    fn typedef_unsigned_long() {
+        let test_input = "typedef  unsigned  long  uint32_t;\n";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_unsigned_long_long() {
+        let test_input = "typedef  unsigned  long long uint64_t;\n";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
     fn simple_h() {
         let test_input = "
         #define FOO
