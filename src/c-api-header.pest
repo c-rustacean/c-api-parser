@@ -4,23 +4,15 @@ ident = @{ ( "_" | ASCII_ALPHA ) ~ ( ASCII_ALPHANUMERIC | "_" )* }
 pathpart = @{ ".." | ( ident ~ ( "." ~ ident )* ) }
 filename = { ( ASCII_ALPHA ~ ":" ~ "\\\\" )? ~ pathpart ~ ( ( "\\\\" | "/" ) ~ pathpart )* }
 
-ifdefcpp = { "#ifdef" ~ "__cplusplus" ~ NEWLINE }
-extern_c = @{ "extern" ~ SPACES ~ "\"C\"" ~ SPACES ~ "{" ~ SPACES ~ NEWLINE }
-cpp_open = _{ ifdefcpp ~ extern_c ~ p_endif }
-cpp_close = _{ ifdefcpp ~ "}" ~ p_endif }
 
 preproc_line = _{ "#line" ~ ASCII_DIGIT ~ "\"" ~ filename ~ "\"" }
 pragma_line = _{ "#pragma" ~ ident+ }
 p_line = _{ ( preproc_line | pragma_line ) }
 
-p_ifdef = { "#ifdef" ~ ident }
-p_else = { "#else" }
-p_endif = { "#endif" }
 
-p_define_value = { ((!(NEWLINE|"\\") ~ (!NEWLINE ~ ANY)) | ("\\" ~ NEWLINE))* }
-p_define = @{ "#define" ~ MACROSPACE ~ ident ~ (MACROSPACE ~ p_define_value)? ~ NEWLINE }
 
-oldtype = @{ ident }
+qualifiers = { ("signed" | "unsigned" | "long" | "short") }
+oldtype = { qualifiers? ~ ident }
 newtype = @{ ident }
 tag = @{ ident }
 
@@ -33,9 +25,10 @@ rhs_typedef_complex = { complex_type_def ~ newtype ~ (array_suffix)? }
 
 typedef = { "typedef" ~ (rhs_typedef_complex | rhs_typedef_simple ) ~ ";" }
 
+
 SPACES = _{ " " | "\t" }
 MACROSPACE = _{SPACES | ( "\\" ~ NEWLINE{1} ) }
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
-comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" | "//" ~ (!NEWLINE ~ ANY) }
 
-file = { SOI ~ (typedef | p_define | comment | p_line | NEWLINE)* ~ EOI }
+
+file = { SOI ~ (p_line | typedef |  NEWLINE)* ~ EOI }
