@@ -9,8 +9,8 @@ extern_c = @{ "extern" ~ SPACES ~ "\"C\"" ~ SPACES ~ "{" ~ SPACES ~ NEWLINE }
 cpp_open = _{ ifdefcpp ~ extern_c ~ p_endif }
 cpp_close = _{ ifdefcpp ~ "}" ~ p_endif }
 
-preproc_line = _{ "#line" ~ ASCII_DIGIT ~ "\"" ~ filename ~ "\"" }
-pragma_line = _{ "#pragma" ~ ident+ }
+preproc_line = _{ "#line" ~ ASCII_DIGIT ~ ("\"" ~ filename ~ "\"")? }
+pragma_line = _{ "#pragma" ~ ident? ~ ident }
 p_line = _{ ( preproc_line | pragma_line ) }
 
 p_ifdef = { "#ifdef" ~ ident }

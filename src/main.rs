@@ -228,8 +228,15 @@ mod tests {
     }
 
     #[test]
-    fn preproc_line() {
+    fn preproc_line_fn() {
         let test_input = "#line 1 \"..\\\\..\\\\minimal_api_user.c\"";
+        let parse = ApiParser::parse(Rule::p_line, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn preproc_line() {
+        let test_input = "#line 123 \n";
         let parse = ApiParser::parse(Rule::p_line, test_input);
         assert!(dbg!(parse).is_ok());
     }
