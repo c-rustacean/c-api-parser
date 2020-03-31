@@ -25,7 +25,8 @@ newtype = @{ ident }
 tag = @{ ident }
 
 array_index = { ( ASCII_ALPHANUMERIC | "_" )+ }
-array_suffix = { "[" ~ array_index ~ "]" }
+paren_array_index = { "(" ~ array_index ~ ")" | array_index }
+array_suffix = { "[" ~ paren_array_index ~ "]" }
 
 rhs_typedef_simple = { oldtype ~ newtype ~ (array_suffix)? }
 complex_type_def = { ("union" | "struct") ~ ( tag )? ~ "{" ~ ( (rhs_typedef_complex | rhs_typedef_simple) ~ ";")+ ~ "}" }

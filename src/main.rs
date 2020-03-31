@@ -104,6 +104,21 @@ mod tests {
     }
 
     #[test]
+    fn typedef_array_u8_numeric_index_suf() {
+        let test_input = "typedef uint8_t byte[4U];";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+    #[test]
+    fn typedef_array_u8_numeric_index_suf_parens() {
+        let test_input = "typedef uint8_t byte[(4U)];";
+        let parse = ApiParser::parse(Rule::typedef, test_input);
+        assert!(dbg!(parse).is_ok());
+    }
+
+
+    #[test]
     fn array_index_numeric() {
         let parse = ApiParser::parse(Rule::array_index, "34");
         assert!(dbg!(parse).is_ok());
