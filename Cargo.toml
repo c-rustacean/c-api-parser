@@ -6,6 +6,12 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+lto = true			# link time optimzations
+opt-level = 'z'		# Optimize for size.
+codegen-units = 1	# Decrease size at the cost of compile time
+panic = 'abort'		# Abort on panic; smaller code on error handling
+
 [dependencies]
 pest = "2.1.3"
 pest_derive = "2.1.0"
